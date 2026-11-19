@@ -1,0 +1,26 @@
+{
+  "name": "@gn/backend",
+  "private": true,
+  "version": "1.0.0",
+  "description": "API do Guerra de Narrativas: contas, progresso e registro das partidas (PostgreSQL)",
+  "type": "module",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env --watch-path=src --watch-path=../banco/migracoes src/index.ts",
+    "start": "node --env-file-if-exists=.env src/index.ts",
+    "tipos": "tsc --noEmit",
+    "test": "node --test \"src/**/*.test.ts\"",
+    "importa-jsonl": "node --env-file-if-exists=.env src/ferramentas/importa-jsonl.ts",
+    "confere-compras": "node --env-file-if-exists=.env src/ferramentas/confere-compras.ts"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "pg": "^8.16.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.0",
+    "@types/pg": "^8.15.0",
+    "typescript": "^5.9.0"
+  }
+}

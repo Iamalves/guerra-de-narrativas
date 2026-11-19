@@ -1,0 +1,43 @@
+# Teste local da versão para HostGator: PHP + Apache (como o cPanel) e MySQL 5.7.
+# Subir:  docker compose -f backend-php/docker-compose.yml up -d --build
+# A API fica em http://localhost:8088/api e o jogo publicado (frontend/dist) em http://localhost:8088
+# Parar:  docker compose -f backend-php/docker-compose.yml down        (os dados ficam no volume gn-php-dados)
+name: guerra-de-narrativas-php
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: gn-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: guerra
+      MYSQL_USER: guerra
+      MYSQL_PASSWORD: guerra_local
+      MYSQL_ROOT_PASSWORD: guerra_root_local
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --sql-mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+    ports:
+      - "127.0.0.1:3307:3306"
+    volumes:
+      - gn-php-dados:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uguerra", "-pguerra_local"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+  php:
+    build: ./dev
+    container_name: gn-php
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      GN_CONFIG: /config/gn-config.php
+    ports:
+      - "127.0.0.1:8088:80"
+    volumes:
+      # public_html: o jogo publicado (frontend/dist) e a API ao lado, em /api
+      - ../frontend/dist:/var/www/html
+      - ./api:/var/www/html/api
+      - ./dev/gn-config.php:/config/gn-config.php:ro
+volumes:
+  gn-php-dados:

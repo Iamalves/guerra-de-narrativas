@@ -1,0 +1,29 @@
+# Banco do Guerra de Narrativas: PostgreSQL 18 em Docker.
+# Subir:   docker compose -f banco/docker-compose.yml up -d
+# Parar:   docker compose -f banco/docker-compose.yml down        (os dados ficam no volume gn-dados)
+# Apagar tudo, inclusive os dados:  docker compose -f banco/docker-compose.yml down -v
+# As tabelas são criadas pelo backend ao iniciar (banco/migracoes), então o banco começa vazio.
+name: guerra-de-narrativas
+services:
+  postgres:
+    image: postgres:18
+    container_name: gn-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: guerra
+      POSTGRES_USER: guerra
+      # senha só para o banco local; para usar fora do seu computador, defina GN_DB_SENHA num arquivo banco/.env
+      POSTGRES_PASSWORD: ${GN_DB_SENHA:-guerra_local}
+    ports:
+      # 5433 no seu computador, para não brigar com outro Postgres que já use a 5432
+      - "127.0.0.1:5433:5432"
+    volumes:
+      # no Postgres 18 o volume fica em /var/lib/postgresql (não mais em .../data)
+      - gn-dados:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U guerra -d guerra"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+volumes:
+  gn-dados:

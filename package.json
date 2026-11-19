@@ -1,0 +1,20 @@
+{
+  "name": "guerra-de-narrativas",
+  "private": true,
+  "description": "Guerra de Narrativas: frontend (React + TS), backend (Node + TS) e banco (PostgreSQL 18 em Docker)",
+  "workspaces": ["backend", "frontend"],
+  "scripts": {
+    "banco:subir": "docker compose -f banco/docker-compose.yml up -d --wait",
+    "banco:parar": "docker compose -f banco/docker-compose.yml down",
+    "back": "npm run dev -w backend",
+    "front": "npm run dev -w frontend",
+    "separa-jogo": "node ferramentas/separa-jogo.mjs",
+    "tipos": "npm run tipos -w backend && npm run tipos -w frontend",
+    "test": "npm test -w backend",
+    "build": "npm run separa-jogo && npm run build -w frontend",
+    "php:subir": "docker compose -f backend-php/docker-compose.yml up -d --build --wait",
+    "php:parar": "docker compose -f backend-php/docker-compose.yml down",
+    "php:teste": "node backend-php/teste-api.mjs",
+    "pacote-hostgator": "node ferramentas/pacote-hostgator.mjs"
+  }
+}

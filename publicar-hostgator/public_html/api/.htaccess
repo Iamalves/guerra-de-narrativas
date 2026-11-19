@@ -1,0 +1,29 @@
+# API do Guerra de Narrativas (public_html/api): todo pedido vai para o index.php
+Options -Indexes
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # o Apache da hospedagem costuma esconder o cabeçalho Authorization do PHP: repassa (o token da conta vem nele)
+  RewriteCond %{HTTP:Authorization} .
+  RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+  # nada de abrir os arquivos internos pelo navegador
+  RewriteRule ^(lib|migracoes)(/|$) - [F,L]
+  RewriteRule ^config\.php$ - [F,L]
+  RewriteRule ^precos\.json$ - [F,L]
+  # o resto vai para o index.php
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^ index.php [L,QSA]
+</IfModule>
+
+<IfModule mod_setenvif.c>
+  SetEnvIf Authorization "(.+)" HTTP_AUTHORIZATION=$1
+</IfModule>
+
+# config.php (se você deixar a configuração aqui em vez de fora do public_html) nunca é servido
+<Files "config.php">
+  Require all denied
+</Files>
+<Files "config.exemplo.php">
+  Require all denied
+</Files>

@@ -1,0 +1,30 @@
+<!-- GERADO por ferramentas/separa-jogo.mjs a partir de guerra-de-narrativas.html. Não edite aqui: edite o original e rode o script. -->
+<div id="app">
+  <header id="hud">
+    <h1>Guerra de Narrativas</h1>
+    <div class="stat s-vida" title="Apoio popular: são as suas vidas. Quem chega ao fim da avenida tira apoio; em zero, você perde."><span class="sIco" aria-hidden="true">❤️</span><div class="sTx"><small>Apoio popular</small><b id="lives">150</b><i class="vidaBar" aria-hidden="true"><i id="vidaFill"></i></i></div></div>
+    <div class="stat s-verba" title="Verba: o seu dinheiro para comprar e evoluir personagens."><span class="sIco" aria-hidden="true">💰</span><div class="sTx"><small>Verba</small><b id="cash">R$ 0</b></div></div>
+    <div class="stat s-rod"><small>Rodada</small><b id="round">0/40</b></div>
+    <div class="stat s-uf"><small>Estado</small><b id="uf">DF</b></div>
+    <button class="hb ic" id="pause" title="Pausar (P)" aria-label="Pausar">❚❚</button>
+    <button class="hb" id="menuBtn" title="Voltar ao menu (a partida fica salva)">☰ Menu</button>
+    <div class="spacer"></div>
+    <button class="hb" id="ability" disabled>★ Poder do herói</button>
+    <button class="hb" id="speed">Vel. ×1</button>
+    <button class="hb" id="auto">Auto: não</button>
+    <button class="hb ic" id="sound" title="Som ligado" aria-label="Som ligado">🔊</button>
+    <button class="hb" id="go">Começar rodada</button>
+  </header>
+  <main id="stage">
+    <canvas id="c" role="img" aria-label="Mapa da partida: a marcha vem pela avenida e os seus personagens ficam em volta"></canvas>
+    <div id="aoVivo" class="sr" aria-live="polite"></div>
+    <div id="balao" class="hide"></div>
+    <div id="poderes" aria-label="Poderes especiais"></div>
+    <div id="evo" class="hide"></div>
+    <div id="overlay"></div>
+  </main>
+  <aside id="panel">
+    <div id="shop"></div>
+    <div id="info"></div>
+  </aside>
+</div>

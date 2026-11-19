@@ -1,0 +1,37 @@
+# public_html/.htaccess do Guerra de Narrativas (vai na raiz do site, no cPanel)
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # sempre https (o Mercado Pago só devolve o jogador e só avisa pagamentos em https)
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+<IfModule mod_headers.c>
+  # a página e o service worker nunca ficam guardados: assim a versão nova aparece logo depois de publicar
+  <FilesMatch "^(index\.html|sw\.js|manifest\.webmanifest)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  # arquivos com código de versão no nome (assets/) podem ficar guardados por um ano
+  <FilesMatch "\.(js|css|png|woff2?)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <Files "motor.js">
+    Header set Cache-Control "no-cache"
+  </Files>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  # o navegador passa a usar só https neste domínio por 1 ano
+  Header always set Strict-Transport-Security "max-age=31536000"
+  # só o próprio site roda código (scripts de outros lugares ficam bloqueados); fontes do Google; nada de abrir o jogo
+  # dentro de outro site (contra golpes de "clique escondido")
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+  Header always set X-Frame-Options "DENY"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+</IfModule>
